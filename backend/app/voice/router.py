@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel
@@ -9,6 +10,9 @@ from app.agents.backboard import (
     backboard_save,
     backboard_get_history,
 )
+from app.agents.summarizer import run_qa
+from app.agents.llm import summarizer_llm, call_llm
+from app.agents.router import vector_store, result_store
 
 
 router = APIRouter(prefix="/voice", tags=["voice"])
@@ -62,6 +66,21 @@ class SaveBackboardMessageBody(BaseModel):
     content: str
 
 
+class VoiceThinkRequest(BaseModel):
+    """
+    Request body for ElevenLabs to delegate its "thinking" to
+    Backboard + Gemini.
+
+    - thread_id: Backboard thread used as persistent memory
+    - user_utterance: latest transcript from the user
+    - session_id: optional document analysis session for RAG
+    """
+
+    thread_id: str
+    user_utterance: str
+    session_id: Optional[str] = None
+
+
 @router.post("/backboard/thread")
 async def create_backboard_thread(
     body: CreateBackboardThreadBody,
@@ -107,4 +126,63 @@ async def get_backboard_history_for_voice(
     messages = await backboard_get_history(thread_id)
     return {"thread_id": thread_id, "messages": messages}
 
+
+@router.post("/think")
+async def voice_think(
+    body: VoiceThinkRequest,
+    _: None = Depends(_verify_internal_api_key),
+) -> dict:
+    """
+    Central thinking endpoint for ElevenLabs.
+
+    - If session_id is provided, answers using the analyzed document's
+      FAISS index + Backboard Q&A pipeline (run_qa).
+    - Otherwise, answers as a general Canadian legal information
+      assistant and logs the exchange in Backboard.
+    """
+    # Document-grounded mode: reuse the existing QA pipeline (RAG + Backboard)
+    if body.session_id:
+        session_id = body.session_id
+        if session_id not in result_store:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND,
+                "No analysis found for this session_id. Run /api/agents/analyze first.",
+            )
+        if session_id not in vector_store:
+            raise HTTPException(
+                status.HTTP_400_BAD_REQUEST,
+                "Vector store unavailable for this session_id.",
+            )
+
+        docs = vector_store[session_id].similarity_search(body.user_utterance, k=4)
+        chunks = [d.page_content for d in docs]
+        doc_name = result_store[session_id]["document_name"]
+
+        answer = await run_qa(doc_name, body.user_utterance, chunks, body.thread_id)
+        # run_qa already logs Q&A into Backboard.
+        return {"answer": answer}
+
+    # General legal information mode (no document/session)
+    prompt = f"""
+You are a Canadian legal information assistant for non-lawyers in Canada.
+
+Guidelines:
+- You are NOT a lawyer and do NOT provide formal legal advice.
+- You CAN explain concepts, common risks, and typical Canadian law principles
+  (e.g., Canada Labour Code, PIPEDA, provincial consumer protection).
+- Keep answers short and clear: 3–5 sentences, plain English, no jargon.
+- If you are unsure or law varies by province, say so explicitly.
+- ALWAYS end your answer with this exact sentence:
+  "This is general information, not legal advice."
+
+User question:
+{body.user_utterance}
+"""
+    answer = await call_llm(summarizer_llm(), prompt)
+
+    # Log the voice exchange into Backboard for memory
+    await backboard_save(body.thread_id, "user", f"VOICE QUESTION: {body.user_utterance}")
+    await backboard_save(body.thread_id, "assistant", f"VOICE ANSWER: {answer}")
+
+    return {"answer": answer}
 

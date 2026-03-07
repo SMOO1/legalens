@@ -5,8 +5,12 @@ from typing import Any, Dict, List
 
 import httpx
 
-from .backboard import backboard_save
+from .backboard import backboard_save, backboard_get_history
 from .llm import analyst_llm, call_llm
+
+
+# Process-wide cache so we only scrape CanLII once per backend instance.
+_GLOBAL_LAW_CONTEXT: str | None = None
 
 
 ANALYST_PROMPT = """You are a senior legal analyst specializing in Canadian contract law.
@@ -79,11 +83,35 @@ async def scrape_canlii(clause_type: str) -> str:
     return ""
 
 
-async def get_live_canadian_law(clauses: List[Dict[str, Any]]) -> str:
+async def get_live_canadian_law(
+    clauses: List[Dict[str, Any]],
+    thread_id: str,
+) -> str:
     """
     Scrapes CanLII for live law references for each clause type.
     Falls back to Gemini training knowledge if scraping fails.
+
+    Results are cached globally in-process so we don't need to scrape
+    per thread or per user. We still mirror the context into Backboard
+    for transparency and debugging.
     """
+    global _GLOBAL_LAW_CONTEXT
+
+    # First: global in-process cache, shared across all threads/users.
+    if _GLOBAL_LAW_CONTEXT:
+        return _GLOBAL_LAW_CONTEXT
+
+    # Try to reuse a previously computed law context from Backboard
+    if thread_id:
+        try:
+            history = await backboard_get_history(thread_id)
+            for msg in reversed(history):
+                content = msg.get("content", "")
+                if content.startswith("LAW_CONTEXT:"):
+                    return content[len("LAW_CONTEXT:") :].lstrip()
+        except Exception as e:
+            print(f"  -> Backboard law context lookup failed: {e}")
+
     unique_types = list(set(c["type"] for c in clauses))
     live_refs = []
     print(f"  -> Querying CanLII for {len(unique_types)} clause types...")
@@ -93,8 +121,25 @@ async def get_live_canadian_law(clauses: List[Dict[str, Any]]) -> str:
             live_refs.append(f"- {clause_type}: {result}")
         await asyncio.sleep(0.3)
     if live_refs:
-        return "LIVE CANLII REFERENCES (from canlii.org):\n" + "\n".join(live_refs)
-    return "No live CanLII results found. Use your training knowledge of Canadian law to analyze these clauses."
+        context = "LIVE CANLII REFERENCES (from canlii.org):\n" + "\n".join(live_refs)
+    else:
+        context = (
+            "No live CanLII results found. Use your training knowledge of Canadian law "
+            "to analyze these clauses."
+        )
+
+    # Cache globally so all threads reuse this without re-scraping
+    _GLOBAL_LAW_CONTEXT = context
+
+    # Also mirror the law context into Backboard for this thread so
+    # history endpoints show which references were used.
+    if thread_id:
+        try:
+            await backboard_save(thread_id, "assistant", f"LAW_CONTEXT: {context}")
+        except Exception as e:
+            print(f"  -> Backboard law context save failed: {e}")
+
+    return context
 
 
 async def run_analyst(
@@ -107,7 +152,7 @@ async def run_analyst(
     if not clauses:
         return []
 
-    canadian_law_context = await get_live_canadian_law(clauses)
+    canadian_law_context = await get_live_canadian_law(clauses, thread_id)
 
     all_analyzed: List[Dict[str, Any]] = []
     batch_size = 5

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { DocumentTextIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Conversation } from '@elevenlabs/client';
 import Layout from '../components/Layout';
-import { listDocuments, getDocumentUrl, createVoiceSession } from '../api.ts';
+import { listDocuments, getDocumentUrl, createVoiceSession, createBackboardThread, voiceThink } from '../api.ts';
 
 function formatBytes(bytes) {
     if (!bytes) return '—';
@@ -28,6 +28,7 @@ export default function Dashboard() {
     const [voiceStatus, setVoiceStatus] = useState('idle');
     const [voiceError, setVoiceError] = useState('');
     const voiceConversationRef = useRef(null);
+    const voiceBackboardThreadIdRef = useRef(null);
 
     useEffect(() => {
         listDocuments()
@@ -132,8 +133,13 @@ export default function Dashboard() {
             setVoiceError('');
             setVoiceStatus('connecting');
 
-            const session = await createVoiceSession();
+            const [session, backboard] = await Promise.all([
+                createVoiceSession(),
+                createBackboardThread('LegaLens Voice Consultant'),
+            ]);
+            voiceBackboardThreadIdRef.current = backboard.thread_id;
 
+            const threadIdRef = voiceBackboardThreadIdRef;
             const conversation = await Conversation.startSession({
                 agentId: session.agent_id,
                 conversationToken: session.webrtc_token,
@@ -152,6 +158,25 @@ export default function Dashboard() {
                     setVoiceStatus('error');
                     voiceConversationRef.current = null;
                     setAssistantSpeaking(false);
+                },
+                // Backboard + Gemini thinking: agent must have a tool "get_legal_answer(query)" in the ElevenLabs dashboard with "Wait for response" enabled.
+                clientTools: {
+                    get_legal_answer: async ({ query }) => {
+                        const threadId = threadIdRef.current;
+                        if (!threadId) return 'No conversation thread. Please try again.';
+                        try {
+                            const { answer } = await voiceThink({
+                                thread_id: threadId,
+                                user_utterance: typeof query === 'string' ? query : String(query ?? ''),
+                                session_id: null,
+                            });
+                            return answer;
+                        } catch (err) {
+                            // eslint-disable-next-line no-console
+                            console.error('Voice think error:', err);
+                            return err?.message || 'Sorry, I could not get an answer right now.';
+                        }
+                    },
                 },
             });
 
