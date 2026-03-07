@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { setTokenGetter } from '../api.ts';
 
 export default function Layout({ children }) {
+    const { user, isAuthenticated, loginWithRedirect, logout, getAccessTokenSilently } = useAuth0();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            setTokenGetter(getAccessTokenSilently);
+        }
+    }, [isAuthenticated, getAccessTokenSilently]);
+
     return (
         <div className="min-h-screen bg-premium-gradient flex flex-col font-sans transition-colors duration-500">
             <header className="sticky top-0 z-50 glass-panel border-b border-white/20 px-6 py-4 flex items-center justify-between">
@@ -23,10 +33,19 @@ export default function Layout({ children }) {
                 </nav>
 
                 <div className="flex items-center gap-4">
-                    <button className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Log In</button>
-                    <button className="px-4 py-2 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-800 shadow-md hover:shadow-lg transition-all active:scale-95">
-                        Get Started
-                    </button>
+                    {isAuthenticated ? (
+                        <>
+                            <span className="text-sm text-gray-600 hidden sm:inline">{user?.email}</span>
+                            <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })} className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Log Out</button>
+                        </>
+                    ) : (
+                        <>
+                            <button onClick={() => loginWithRedirect()} className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Log In</button>
+                            <button onClick={() => loginWithRedirect({ authorizationParams: { screen_hint: 'signup' } })} className="px-4 py-2 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-800 shadow-md hover:shadow-lg transition-all active:scale-95">
+                                Get Started
+                            </button>
+                        </>
+                    )}
                 </div>
             </header>
 

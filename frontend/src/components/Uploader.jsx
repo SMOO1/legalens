@@ -1,13 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DocumentPlusIcon, DocumentTextIcon, CheckCircleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { useAuth0 } from '@auth0/auth0-react';
+import { uploadDocument } from '../api.ts';
 
 const Uploader = () => {
+    const { isAuthenticated } = useAuth0();
     const [file, setFile] = useState(null);
     const [isHovering, setIsHovering] = useState(false);
     const [isScanning, setIsScanning] = useState(false);
     const [simulatedProgress, setSimulatedProgress] = useState(0);
     const [scanComplete, setScanComplete] = useState(false);
+    const [uploadError, setUploadError] = useState("");
     const fileInputRef = useRef(null);
 
     const handleDragEnter = (e) => {
@@ -38,9 +42,22 @@ const Uploader = () => {
         }
     };
 
-    const initiateScan = () => {
+    const initiateScan = async () => {
+        setUploadError("");
+        if (!isAuthenticated) {
+            setUploadError("Please log in to scan documents.");
+            return;
+        }
         setIsScanning(true);
         setSimulatedProgress(0);
+
+        try {
+            await uploadDocument(file);
+        } catch (err) {
+            setIsScanning(false);
+            setUploadError(err.message);
+            return;
+        }
 
         const interval = setInterval(() => {
             setSimulatedProgress(prev => {
@@ -61,6 +78,7 @@ const Uploader = () => {
         setFile(null);
         setScanComplete(false);
         setSimulatedProgress(0);
+        setUploadError("");
     };
 
     return (
@@ -152,6 +170,12 @@ const Uploader = () => {
                                 </button>
                             )}
                         </div>
+
+                        {uploadError && (
+                            <div className="mb-6 p-4 bg-red-50 text-red-700 border border-red-200 rounded-lg text-sm">
+                                {uploadError}
+                            </div>
+                        )}
 
                         {/* Scanning progress UI */}
                         <AnimatePresence>
