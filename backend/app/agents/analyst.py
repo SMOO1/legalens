@@ -163,52 +163,45 @@ async def run_analyst(
     canadian_law_context = await get_live_canadian_law(clauses, thread_id)
 
     all_analyzed: List[Dict[str, Any]] = []
-    batch_size = 5
-
-    for i in range(0, len(clauses), batch_size):
-        batch = clauses[i : i + batch_size]
-        print(f"  -> Batch {i // batch_size + 1}/{(len(clauses) + batch_size - 1) // batch_size}")
-        prompt = ANALYST_PROMPT.format(
-            document_name=document_name,
-            document_type=document_type,
-            canadian_law=canadian_law_context,
-            clauses_json=json.dumps(batch, indent=2),
-        )
-        try:
-            raw = await call_llm(analyst_llm(), prompt)
-            raw = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw)
-            required = [
-                "id",
-                "type",
-                "raw_text",
-                "location",
-                "severity",
-                "severity_reason",
-                "plain_english",
-                "canadian_law",
-                "baseline_comparison",
-                "negotiation_tip",
-            ]
-            for item in json.loads(raw):
-                if all(k in item for k in required):
-                    all_analyzed.append({k: item[k] for k in required})
-        except Exception as e:
-            print(f"  -> Batch error: {e}")
-            for clause in batch:
-                all_analyzed.append(
-                    {
-                        **clause,
-                        "severity": "UNKNOWN",
-                        "severity_reason": "Analysis failed for this clause.",
-                        "plain_english": "N/A",
-                        "canadian_law": "N/A",
-                        "baseline_comparison": "N/A",
-                        "negotiation_tip": "N/A",
-                    }
-                )
-
-        if i + batch_size < len(clauses):
-            await asyncio.sleep(2)
+    # Single analysis call over all clauses instead of batching.
+    prompt = ANALYST_PROMPT.format(
+        document_name=document_name,
+        document_type=document_type,
+        canadian_law=canadian_law_context,
+        clauses_json=json.dumps(clauses, indent=2),
+    )
+    try:
+        raw = await call_llm(analyst_llm(), prompt)
+        raw = re.sub(r"^```(?:json)?\s*|\s*```$", "", raw)
+        required = [
+            "id",
+            "type",
+            "raw_text",
+            "location",
+            "severity",
+            "severity_reason",
+            "plain_english",
+            "canadian_law",
+            "baseline_comparison",
+            "negotiation_tip",
+        ]
+        for item in json.loads(raw):
+            if all(k in item for k in required):
+                all_analyzed.append({k: item[k] for k in required})
+    except Exception as e:
+        print(f"  -> Analyst error: {e}")
+        for clause in clauses:
+            all_analyzed.append(
+                {
+                    **clause,
+                    "severity": "UNKNOWN",
+                    "severity_reason": "Analysis failed for this clause.",
+                    "plain_english": "N/A",
+                    "canadian_law": "N/A",
+                    "baseline_comparison": "N/A",
+                    "negotiation_tip": "N/A",
+                }
+            )
 
     all_analyzed.sort(
         key=lambda c: {"HIGH": 0, "MEDIUM": 1, "LOW": 2}.get(c.get("severity", ""), 3)
