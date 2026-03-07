@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from gotrue.errors import AuthApiError
 
-from db.client import supabase
+from app.db.client import supabase
 from app.auth.schemas import (
     SignUpRequest,
     SignInRequest,

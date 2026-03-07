@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, HTTPException, Depends
 
-from db.storage import upload_pdf, list_files, get_signed_url, delete_file
+from app.db.storage import upload_pdf, list_files, get_signed_url, delete_file
 from app.auth.dependencies import get_current_user
 
 router = APIRouter(prefix="/documents", tags=["documents"])

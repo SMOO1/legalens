@@ -1,5 +1,5 @@
 import uuid
-from backend.db.client import supabase
+from app.db.client import supabase
 
 BUCKET_NAME = "legal documents"
 

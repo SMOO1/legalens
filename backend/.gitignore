@@ -1,3 +1,4 @@
-_pycache
 .env
 sql
+.venv
+__pycache__
