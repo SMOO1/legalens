@@ -36,6 +36,7 @@ pyroaring==1.0.3
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.2
 python-multipart==0.0.22
+langgraph==0.2.67
 realtime==2.28.0
 requests==2.32.5
 rich==14.3.3
@@ -55,3 +56,6 @@ uvicorn==0.41.0
 websockets==15.0.1
 yarl==1.23.0
 zstandard==0.25.0
+elevenlabs
+pvporcupine
+sounddevice
