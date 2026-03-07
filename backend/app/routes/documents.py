@@ -2,8 +2,10 @@ from fastapi import APIRouter, UploadFile, HTTPException, Depends
 
 from app.db.storage import upload_pdf, list_files, get_signed_url, delete_file
 from app.auth.dependencies import get_current_user
+from app.services.pdf_parser import extract_text_from_pdf
 
 router = APIRouter(prefix="/documents", tags=["documents"])
+
 
 @router.post("/upload")
 async def upload_document(file: UploadFile, user: dict = Depends(get_current_user)):
@@ -12,7 +14,10 @@ async def upload_document(file: UploadFile, user: dict = Depends(get_current_use
 
     contents = await file.read()
     result = upload_pdf(contents, file.filename, user["user_id"])
-    return {"message": "File uploaded successfully", **result}
+
+    extracted_text = extract_text_from_pdf(contents)
+
+    return {"message": "File uploaded successfully", "extracted_text": extracted_text, **result}
 
 
 @router.get("/")
