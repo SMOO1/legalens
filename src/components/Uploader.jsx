@@ -68,11 +68,8 @@ const Uploader = () => {
             {/* Introduction text */}
             <div className="text-center mb-10 w-full">
                 <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
-                    Find Predatory Clauses before you <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Sign.</span>
+                    Find Predatory Clauses before you <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-500">Sign.</span>
                 </h2>
-                <p className="text-lg text-gray-600 mb-2 max-w-xl mx-auto">
-                    Upload any contract, NDA, or rental agreement. Our AI will instantly highlight risky terminology and unbalanced terms.
-                </p>
             </div>
 
             {/* Main Upload Area */}
@@ -210,8 +207,8 @@ const Uploader = () => {
                                     onClick={initiateScan}
                                     disabled={isScanning}
                                     className={`flex-1 py-3 px-6 rounded-xl font-semibold shadow-md transition-all ${isScanning
-                                            ? 'bg-blue-400 text-white cursor-not-allowed opacity-90'
-                                            : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg active:scale-[0.98]'
+                                        ? 'bg-blue-400 text-white cursor-not-allowed opacity-90'
+                                        : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg active:scale-[0.98]'
                                         } flex items-center justify-center gap-2`}
                                 >
                                     {isScanning ? (
