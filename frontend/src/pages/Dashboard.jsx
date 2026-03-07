@@ -181,7 +181,7 @@ export default function Dashboard() {
                             placeholder="Search documents..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="pl-10 pr-4 py-2 bg-[#F5F0EC] border border-[#604B42]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17282E]/40 w-full md:w-64"
+                            className="pixel-input pl-10 pr-4 py-2 bg-[#F5F0EC] w-full md:w-64"
                         />
                     </div>
                 </div>
@@ -229,36 +229,47 @@ export default function Dashboard() {
                 {activeTab === 'overview' && (
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                            <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-[#604B42]/25 bg-[#F5F0EC]">
-                                <div className="w-6 h-6 rounded-full bg-[#C7D9FF] ring-2 ring-[#604B42]/30" />
-                                <div>
-                                    <p className="text-sm font-medium text-[#604B42]">Total scanned</p>
-                                    <h4 className="text-2xl font-semibold text-[#17282E]">{documents.length}</h4>
+                            <div className="relative">
+                                <div className="absolute inset-0 translate-x-[3px] translate-y-[3px] bg-[#17282E]/25" />
+                                <div className="relative glass-panel p-6 flex items-center gap-4 border border-[#604B42]/25 bg-[#F5F0EC]">
+                                    <div className="w-6 h-6 bg-[#C7D9FF] ring-2 ring-[#604B42]/30" />
+                                    <div>
+                                        <p className="text-sm font-medium text-[#604B42]">Total scanned</p>
+                                        <h4 className="text-2xl font-semibold text-[#17282E]">{documents.length}</h4>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-[#604B42]/25 bg-[#F5F0EC]">
-                                <div className="w-6 h-6 rounded-full bg-[#F8C7C8] ring-2 ring-[#604B42]/30" />
-                                <div>
-                                    <p className="text-sm font-medium text-[#604B42]">Clauses flagged</p>
-                                    <h4 className="text-2xl font-semibold text-[#17282E]">—</h4>
+                            <div className="relative">
+                                <div className="absolute inset-0 translate-x-[3px] translate-y-[3px] bg-[#17282E]/25" />
+                                <div className="relative glass-panel p-6 flex items-center gap-4 border border-[#604B42]/25 bg-[#F5F0EC]">
+                                    <div className="w-6 h-6 bg-[#F8C7C8] ring-2 ring-[#604B42]/30" />
+                                    <div>
+                                        <p className="text-sm font-medium text-[#604B42]">Clauses flagged</p>
+                                        <h4 className="text-2xl font-semibold text-[#17282E]">—</h4>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-[#604B42]/25 bg-[#F5F0EC]">
-                                <div className="w-6 h-6 rounded-full bg-[#C9E8D7] ring-2 ring-[#604B42]/30" />
-                                <div>
-                                    <p className="text-sm font-medium text-[#604B42]">Clean documents</p>
-                                    <h4 className="text-2xl font-semibold text-[#17282E]">—</h4>
+                            <div className="relative">
+                                <div className="absolute inset-0 translate-x-[3px] translate-y-[3px] bg-[#17282E]/25" />
+                                <div className="relative glass-panel p-6 flex items-center gap-4 border border-[#604B42]/25 bg-[#F5F0EC]">
+                                    <div className="w-6 h-6 bg-[#C9E8D7] ring-2 ring-[#604B42]/30" />
+                                    <div>
+                                        <p className="text-sm font-medium text-[#604B42]">Clean documents</p>
+                                        <h4 className="text-2xl font-semibold text-[#17282E]">—</h4>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="glass-panel rounded-2xl overflow-hidden border border-[#604B42]/25 shadow-sm">
+                        <div className="relative">
+                            <div className="absolute inset-0 translate-x-[4px] translate-y-[4px] bg-[#17282E]/25" />
+                            <div className="relative glass-panel overflow-hidden border border-[#604B42]/25 shadow-sm">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="bg-[#F5F0EC] border-b border-[#604B42]/25 text-xs font-semibold text-[#604B42] uppercase tracking-wide">
+                                        <tr className="bg-[#D9CFC8] border-b border-[#604B42]/25 text-xs font-semibold text-[#604B42] uppercase tracking-wide">
                                             <th className="py-3 px-6">Document</th>
                                             <th className="py-3 px-6">Uploaded</th>
                                             <th className="py-3 px-6">Size</th>
@@ -299,7 +310,7 @@ export default function Dashboard() {
                                                 </td>
                                                 <td className="py-4 px-6 text-right">
                                                     <div className="flex items-center justify-end gap-3">
-                                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-[#F5F0EC] text-[#17282E] border-[#604B42]/40">
+                                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium border bg-[#F5F0EC] text-[#17282E] border-[#604B42]/40">
                                                             Uploaded
                                                         </span>
                                                         <button
@@ -328,192 +339,199 @@ export default function Dashboard() {
                                     </button>
                                 </div>
                             </div>
+                            </div>
                         </div>
                     </>
                 )}
 
                 {/* Simulate tab (placeholder) */}
                 {activeTab === 'simulate' && (
-                    <div className="glass-panel rounded-2xl border border-[#604B42]/25 p-8">
-                        <h3 className="text-xl font-semibold text-[#17282E] mb-2">Simulate outcomes</h3>
-                        <p className="text-sm text-[#604B42] mb-6 max-w-xl">
-                            Choose an agreement from your dashboard and preview possible scenarios if you sign as-is:
-                            financial impact, risk exposure, and negotiation levers.
-                        </p>
-                        <div className="border border-dashed border-[#604B42]/30 rounded-xl p-6 flex flex-col items-center justify-center gap-3 bg-[#F5F0EC]/60">
-                            <p className="text-sm text-[#604B42]">
-                                Simulation UI coming soon. For now, this is a placeholder area where you’ll select a document and explore outcomes.
+                    <div className="relative">
+                        <div className="absolute inset-0 translate-x-[4px] translate-y-[4px] bg-[#17282E]/25" />
+                        <div className="relative glass-panel border border-[#604B42]/25 p-8">
+                            <h3 className="text-xl font-semibold text-[#17282E] mb-2">Simulate outcomes</h3>
+                            <p className="text-sm text-[#604B42] mb-6 max-w-xl">
+                                Choose an agreement from your dashboard and preview possible scenarios if you sign as-is:
+                                financial impact, risk exposure, and negotiation levers.
                             </p>
-                            <button
-                                type="button"
-                                className="mt-2 px-4 py-2 rounded-full text-sm font-medium bg-[#17282E] text-[#EBE6E3] hover:bg-[#17282E] transition-colors"
-                            >
-                                Select an agreement to simulate
-                            </button>
+                            <div className="border border-dashed border-[#604B42]/30 p-6 flex flex-col items-center justify-center gap-3 bg-[#F5F0EC]/60">
+                                <p className="text-sm text-[#604B42]">
+                                    Simulation UI coming soon. For now, this is a placeholder area where you’ll select a document and explore outcomes.
+                                </p>
+                                <button
+                                    type="button"
+                                    className="mt-2 px-4 py-2 pixel-button text-sm font-medium bg-[#17282E] text-[#EBE6E3] hover:bg-[#17282E] transition-colors"
+                                >
+                                    Select an agreement to simulate
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
 
                 {/* Consultant tab */}
                 {activeTab === 'consultant' && (
-                    <div className="glass-panel rounded-2xl border border-[#604B42]/25 p-8">
-                        <h3 className="text-xl font-semibold text-[#17282E] mb-2">
-                            LegaLens consultant
-                        </h3>
-                        <p className="text-sm text-[#604B42] mb-6 max-w-xl">
-                            Chat with a placeholder AI legal assistant. Ask about clauses and
-                            trade‑offs, or ground the conversation in one of your uploaded
-                            documents.
-                        </p>
+                    <div className="relative">
+                        <div className="absolute inset-0 translate-x-[4px] translate-y-[4px] bg-[#17282E]/25" />
+                        <div className="relative glass-panel border border-[#604B42]/25 p-8">
+                            <h3 className="text-xl font-semibold text-[#17282E] mb-2">
+                                LegaLens consultant
+                            </h3>
+                            <p className="text-sm text-[#604B42] mb-6 max-w-xl">
+                                Chat with a placeholder AI legal assistant. Ask about clauses and
+                                trade‑offs, or ground the conversation in one of your uploaded
+                                documents.
+                            </p>
 
-                        <div className="flex flex-col md:flex-row gap-6 mb-6">
-                            <div className="flex-1 text-sm text-[#604B42]">
-                                <p>
-                                    Text chat on this page is still a front‑end prototype. Messages stay
-                                    on this page only, but the voice mode uses a real ElevenLabs agent
-                                    configured on your backend.
-                                </p>
-                            </div>
-                            <div className="w-full md:w-72">
-                                <label className="block text-xs font-semibold text-[#604B42] mb-1">
-                                    Context document (optional)
-                                </label>
-                                <select
-                                    value={consultantSelectedDocId}
-                                    onChange={(e) => setConsultantSelectedDocId(e.target.value)}
-                                    className="w-full px-3 py-2 rounded-lg border border-[#604B42]/30 bg-[#F5F0EC] text-sm text-[#17282E] focus:outline-none focus:ring-2 focus:ring-[#17282E]/30"
-                                >
-                                    <option value="none">No document – general legal question</option>
-                                    {documents.map((doc) => (
-                                        <option key={doc.id} value={doc.id}>
-                                            {doc.filename}
-                                        </option>
-                                    ))}
-                                </select>
-                                <p className="mt-1 text-[11px] text-[#604B42]/80">
-                                    In the full version, the consultant would read the selected file for
-                                    extra context.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row gap-6">
-                            <div className="w-full md:w-72 flex flex-col items-center gap-4">
-                                <div className="relative w-52 h-52 md:w-64 md:h-64 flex items-center justify-center">
-                                    <img
-                                        src={
-                                            assistantSpeaking
-                                                ? '/lawyer-talking.png'
-                                                : '/lawyer-neutral.png'
-                                        }
-                                        alt="AI legal consultant avatar"
-                                        className="w-full h-full object-contain pointer-events-none select-none"
-                                    />
+                            <div className="flex flex-col md:flex-row gap-6 mb-6">
+                                <div className="flex-1 text-sm text-[#604B42]">
+                                    <p>
+                                        Text chat on this page is still a front‑end prototype. Messages stay
+                                        on this page only, but the voice mode uses a real ElevenLabs agent
+                                        configured on your backend.
+                                    </p>
                                 </div>
-                                <p className="text-xs text-center text-[#604B42] max-w-xs">
-                                    Speak naturally to this lawyer using real voice via ElevenLabs, or
-                                    type your question into the chat on the right.
-                                </p>
-                            </div>
-
-                            <div className="flex-1 flex flex-col gap-4">
-                                <div className="border border-[#604B42]/30 rounded-xl bg-[#F5F0EC]/60 h-80 flex flex-col overflow-hidden">
-                                    <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-                                        {consultantMessages.length === 0 && (
-                                            <div className="text-xs text-[#604B42] bg-white/70 border border-dashed border-[#604B42]/30 rounded-lg p-3">
-                                                <p className="font-medium mb-1">Try asking:</p>
-                                                <ul className="list-disc list-inside space-y-1">
-                                                    <li>
-                                                        &quot;Is there anything risky about the non‑compete in my latest
-                                                        employment agreement?&quot;
-                                                    </li>
-                                                    <li>
-                                                        &quot;What should I look out for in limitation‑of‑liability clauses?&quot;
-                                                    </li>
-                                                    <li>
-                                                        Select a document above, then ask how fair a specific clause is.
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        )}
-
-                                        {consultantMessages.map((msg) => (
-                                            <div
-                                                key={msg.id}
-                                                className={`flex ${
-                                                    msg.role === 'user' ? 'justify-end' : 'justify-start'
-                                                }`}
-                                            >
-                                                <div
-                                                    className={`max-w-[80%] rounded-2xl px-3 py-2 text-xs ${
-                                                        msg.role === 'user'
-                                                            ? 'bg-[#17282E] text-[#EBE6E3]'
-                                                            : 'bg-white text-[#17282E] border border-[#604B42]/25'
-                                                    }`}
-                                                >
-                                                    {msg.docContext && (
-                                                        <p className="text-[10px] mb-1 opacity-70">
-                                                            Context: {msg.docContext.filename}
-                                                        </p>
-                                                    )}
-                                                    <p>{msg.text}</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col sm:flex-row gap-3 items-stretch">
-                                    <button
-                                        type="button"
-                                        onClick={handleToggleVoice}
-                                        disabled={voiceStatus === 'connecting'}
-                                        className={`sm:w-56 px-4 py-2 rounded-xl text-xs font-semibold bg-[#17282E] text-[#EBE6E3] shadow-sm border border-[#17282E]/60 ${
-                                            voiceStatus === 'connecting' ? 'opacity-60 cursor-wait' : ''
-                                        }`}
+                                <div className="w-full md:w-72">
+                                    <label className="block text-xs font-semibold text-[#604B42] mb-1">
+                                        Context document (optional)
+                                    </label>
+                                    <select
+                                        value={consultantSelectedDocId}
+                                        onChange={(e) => setConsultantSelectedDocId(e.target.value)}
+                                        className="pixel-input w-full px-3 py-2 bg-[#F5F0EC] text-sm text-[#17282E]"
                                     >
-                                        {voiceConversationRef.current
-                                            ? 'End voice conversation'
-                                            : voiceStatus === 'connecting'
-                                                ? 'Starting…'
-                                                : 'Talk to your lawyer'}
-                                    </button>
-                                    <div className="flex-1 text-[11px] text-[#604B42]/90 space-y-1">
-                                        <p>
-                                            Start a real‑time voice conversation powered by ElevenLabs while
-                                            the avatar animates as it speaks. When prompted, allow your
-                                            browser to access the microphone.
-                                        </p>
-                                        <p className="text-[10px]">
-                                            Status: {voiceStatus === 'idle' ? 'idle' : voiceStatus}
-                                            {assistantSpeaking ? ' · speaking' : ''}
-                                        </p>
-                                        {voiceError && (
-                                            <p className="text-[10px] text-red-600">
-                                                {voiceError}
-                                            </p>
-                                        )}
-                                    </div>
+                                        <option value="none">No document – general legal question</option>
+                                        {documents.map((doc) => (
+                                            <option key={doc.id} value={doc.id}>
+                                                {doc.filename}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="mt-1 text-[11px] text-[#604B42]/80">
+                                        In the full version, the consultant would read the selected file for
+                                        extra context.
+                                    </p>
                                 </div>
+                            </div>
 
-                                <form onSubmit={handleConsultantSend} className="flex gap-3 mt-3">
-                                    <div className="flex-1">
-                                        <input
-                                            type="text"
-                                            value={consultantInput}
-                                            onChange={(e) => setConsultantInput(e.target.value)}
-                                            placeholder="Ask about a clause, law, or negotiation angle…"
-                                            className="w-full px-3 py-2 rounded-lg border border-[#604B42]/30 bg-[#F5F0EC] text-sm text-[#17282E] focus:outline-none focus:ring-2 focus:ring-[#17282E]/30"
+                            <div className="flex flex-col md:flex-row gap-6">
+                                <div className="w-full md:w-72 flex flex-col items-center gap-4">
+                                    <div className="relative w-52 h-52 md:w-64 md:h-64 flex items-center justify-center">
+                                        <img
+                                            src={
+                                                assistantSpeaking
+                                                    ? '/lawyer-talking.png'
+                                                    : '/lawyer-neutral.png'
+                                            }
+                                            alt="AI legal consultant avatar"
+                                            className="w-full h-full object-contain pointer-events-none select-none"
                                         />
                                     </div>
-                                    <button
-                                        type="submit"
-                                        disabled={consultantSending || !consultantInput.trim()}
-                                        className="px-4 py-2 rounded-full text-sm font-medium bg-[#17282E] text-[#EBE6E3] hover:bg-[#17282E] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-                                    >
-                                        {consultantSending ? 'Thinking…' : 'Send'}
-                                    </button>
-                                </form>
+                                    <p className="text-xs text-center text-[#604B42] max-w-xs">
+                                        Speak naturally to this lawyer using real voice via ElevenLabs, or
+                                        type your question into the chat on the right.
+                                    </p>
+                                </div>
+
+                                <div className="flex-1 flex flex-col gap-4">
+                                    <div className="border border-[#604B42]/30 bg-[#F5F0EC]/60 h-80 flex flex-col overflow-hidden">
+                                        <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+                                            {consultantMessages.length === 0 && (
+                                                <div className="text-xs text-[#604B42] bg-white/70 border border-dashed border-[#604B42]/30 p-3">
+                                                    <p className="font-medium mb-1">Try asking:</p>
+                                                    <ul className="list-disc list-inside space-y-1">
+                                                        <li>
+                                                            &quot;Is there anything risky about the non‑compete in my latest
+                                                            employment agreement?&quot;
+                                                        </li>
+                                                        <li>
+                                                            &quot;What should I look out for in limitation‑of‑liability clauses?&quot;
+                                                        </li>
+                                                        <li>
+                                                            Select a document above, then ask how fair a specific clause is.
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            )}
+
+                                            {consultantMessages.map((msg) => (
+                                                <div
+                                                    key={msg.id}
+                                                    className={`flex ${
+                                                        msg.role === 'user' ? 'justify-end' : 'justify-start'
+                                                    }`}
+                                                >
+                                                    <div
+                                                        className={`max-w-[80%] px-3 py-2 text-xs ${
+                                                            msg.role === 'user'
+                                                                ? 'bg-[#17282E] text-[#EBE6E3]'
+                                                                : 'bg-white text-[#17282E] border border-[#604B42]/25'
+                                                        }`}
+                                                    >
+                                                        {msg.docContext && (
+                                                            <p className="text-[10px] mb-1 opacity-70">
+                                                                Context: {msg.docContext.filename}
+                                                            </p>
+                                                        )}
+                                                        <p>{msg.text}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-col sm:flex-row gap-3 items-stretch">
+                                        <button
+                                            type="button"
+                                            onClick={handleToggleVoice}
+                                            disabled={voiceStatus === 'connecting'}
+                                            className={`sm:w-56 px-4 py-2 pixel-button text-xs font-semibold bg-[#17282E] text-[#EBE6E3] border border-[#17282E]/60 ${
+                                                voiceStatus === 'connecting' ? 'opacity-60 cursor-wait' : ''
+                                            }`}
+                                        >
+                                            {voiceConversationRef.current
+                                                ? 'End voice conversation'
+                                                : voiceStatus === 'connecting'
+                                                    ? 'Starting…'
+                                                    : 'Talk to your lawyer'}
+                                        </button>
+                                        <div className="flex-1 text-[11px] text-[#604B42]/90 space-y-1">
+                                            <p>
+                                                Start a real‑time voice conversation powered by ElevenLabs while
+                                                the avatar animates as it speaks. When prompted, allow your
+                                                browser to access the microphone.
+                                            </p>
+                                            <p className="text-[10px]">
+                                                Status: {voiceStatus === 'idle' ? 'idle' : voiceStatus}
+                                                {assistantSpeaking ? ' · speaking' : ''}
+                                            </p>
+                                            {voiceError && (
+                                                <p className="text-[10px] text-red-600">
+                                                    {voiceError}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <form onSubmit={handleConsultantSend} className="flex gap-3 mt-3">
+                                        <div className="flex-1">
+                                            <input
+                                                type="text"
+                                                value={consultantInput}
+                                                onChange={(e) => setConsultantInput(e.target.value)}
+                                                placeholder="Ask about a clause, law, or negotiation angle…"
+                                                className="pixel-input w-full px-3 py-2 bg-[#F5F0EC] text-sm text-[#17282E]"
+                                            />
+                                        </div>
+                                        <button
+                                            type="submit"
+                                            disabled={consultantSending || !consultantInput.trim()}
+                                            className="px-4 py-2 pixel-button text-sm font-medium bg-[#17282E] text-[#EBE6E3] hover:bg-[#17282E] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                                        >
+                                            {consultantSending ? 'Thinking…' : 'Send'}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
