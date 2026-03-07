@@ -1,13 +1,17 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DocumentPlusIcon, DocumentTextIcon, CheckCircleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { useAuth0 } from '@auth0/auth0-react';
+import { uploadDocument } from '../api.ts';
 
 const Uploader = () => {
+    const { isAuthenticated, loginWithRedirect } = useAuth0();
     const [file, setFile] = useState(null);
     const [isHovering, setIsHovering] = useState(false);
     const [isScanning, setIsScanning] = useState(false);
     const [simulatedProgress, setSimulatedProgress] = useState(0);
     const [scanComplete, setScanComplete] = useState(false);
+    const [uploadError, setUploadError] = useState("");
     const fileInputRef = useRef(null);
 
     const handleDragEnter = (e) => {
@@ -38,9 +42,22 @@ const Uploader = () => {
         }
     };
 
-    const initiateScan = () => {
+    const initiateScan = async () => {
+        setUploadError("");
+        if (!isAuthenticated) {
+            setUploadError("Please log in to scan documents.");
+            return;
+        }
         setIsScanning(true);
         setSimulatedProgress(0);
+
+        try {
+            await uploadDocument(file);
+        } catch (err) {
+            setIsScanning(false);
+            setUploadError(err.message);
+            return;
+        }
 
         const interval = setInterval(() => {
             setSimulatedProgress(prev => {
@@ -61,6 +78,7 @@ const Uploader = () => {
         setFile(null);
         setScanComplete(false);
         setSimulatedProgress(0);
+        setUploadError("");
     };
 
     return (
@@ -110,6 +128,11 @@ const Uploader = () => {
                         <p className="text-slate-500 max-w-sm mb-4">
                             Supported formats: PDF, DOC, DOCX. Maximum file size: 25MB. All files are securely processed and immediately deleted.
                         </p>
+                        {!isAuthenticated && (
+                            <p className="text-sm text-blue-600 font-medium">
+                                Sign in or create an account to scan and save documents to your dashboard.
+                            </p>
+                        )}
                     </motion.div>
                 ) : (
                     <motion.div
@@ -152,6 +175,12 @@ const Uploader = () => {
                                 </button>
                             )}
                         </div>
+
+                        {uploadError && (
+                            <div className="mb-6 p-4 bg-red-50 text-red-700 border border-red-200 rounded-lg text-sm">
+                                {uploadError}
+                            </div>
+                        )}
 
                         {/* Scanning progress UI */}
                         <AnimatePresence>
@@ -203,20 +232,30 @@ const Uploader = () => {
                         {/* Action Buttons */}
                         <div className="flex flex-col sm:flex-row gap-3">
                             {!scanComplete ? (
-                                <button
-                                    onClick={initiateScan}
-                                    disabled={isScanning}
-                                    className={`flex-1 py-3 px-6 rounded-xl font-semibold shadow-md transition-all ${isScanning
-                                        ? 'bg-blue-400 text-white cursor-not-allowed opacity-90'
-                                        : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg active:scale-[0.98]'
-                                        } flex items-center justify-center gap-2`}
-                                >
-                                    {isScanning ? (
-                                        'Analyzing text...'
-                                    ) : (
-                                        'Scan for Predatory Clauses'
-                                    )}
-                                </button>
+                                isAuthenticated ? (
+                                    <button
+                                        onClick={initiateScan}
+                                        disabled={isScanning}
+                                        className={`flex-1 py-3 px-6 rounded-xl font-semibold shadow-md transition-all ${isScanning
+                                            ? 'bg-blue-400 text-white cursor-not-allowed opacity-90'
+                                            : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg active:scale-[0.98]'
+                                            } flex items-center justify-center gap-2`}
+                                    >
+                                        {isScanning ? (
+                                            'Analyzing text...'
+                                        ) : (
+                                            'Scan for Predatory Clauses'
+                                        )}
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={() => loginWithRedirect({ appState: { returnTo: '/' } })}
+                                        className="flex-1 py-3 px-6 rounded-xl font-semibold bg-gray-900 hover:bg-gray-800 text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                                    >
+                                        Sign in to scan documents
+                                    </button>
+                                )
                             ) : (
                                 <>
                                     <button className="flex-1 py-3 px-6 rounded-xl font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all active:scale-[0.98]">
