@@ -2,31 +2,31 @@
 
 @theme {
   --font-sans: "Inter", "system-ui", "sans-serif";
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-surface: #ffffff;
-  --color-background: #f8fafc;
+  --color-primary-50: #ebe6e3;
+  --color-primary-100: #d9cfc8;
+  --color-primary-500: #604b42;
+  --color-primary-600: #4f3d35;
+  --color-primary-700: #17282e;
+  --color-surface: #f5f0ec;
+  --color-background: #ebe6e3;
 }
 
 body {
   background-color: var(--color-background);
-  color: #0f172a;
+  color: #17282e;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom premium gradient background */
+/* App background */
 .bg-premium-gradient {
-  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+  background: #ebe6e3;
 }
 
 .glass-panel {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(245, 240, 236, 0.9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(23, 40, 46, 0.08);
+  box-shadow: 0 8px 20px rgba(23, 40, 46, 0.06);
 }

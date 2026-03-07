@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { DocumentTextIcon, CheckBadgeIcon, ExclamationTriangleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { DocumentTextIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Layout from '../components/Layout';
 import { listDocuments } from '../api.ts';
 
@@ -32,18 +32,18 @@ export default function Dashboard() {
             <div className="w-full max-w-6xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Your Documents</h2>
-                        <p className="text-gray-500 mt-1">Manage and review your previously scanned agreements.</p>
+                        <h2 className="text-3xl font-semibold text-[#17282E] tracking-tight">Your documents</h2>
+                        <p className="text-sm text-[#604B42] mt-1">Manage and review your previously scanned agreements.</p>
                     </div>
 
                     <div className="relative">
-                        <MagnifyingGlassIcon className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                            <MagnifyingGlassIcon className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#604B42]/60" />
                         <input
                             type="text"
                             placeholder="Search documents..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="pl-10 pr-4 py-2 bg-white/60 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 w-full md:w-64 glass-panel"
+                            className="pl-10 pr-4 py-2 bg-[#F5F0EC] border border-[#604B42]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#17282E]/40 w-full md:w-64"
                         />
                     </div>
                 </div>
@@ -51,9 +51,7 @@ export default function Dashboard() {
                 {/* Stats Overview */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-white/60">
-                        <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
-                            <DocumentTextIcon className="w-6 h-6" />
-                        </div>
+                        <div className="w-3 h-3 rounded-full bg-blue-500" />
                         <div>
                             <p className="text-sm font-medium text-gray-500">Total Scanned</p>
                             <h4 className="text-2xl font-bold text-gray-900">{documents.length}</h4>
@@ -61,9 +59,7 @@ export default function Dashboard() {
                     </div>
 
                     <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-white/60">
-                        <div className="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center text-red-600">
-                            <ExclamationTriangleIcon className="w-6 h-6" />
-                        </div>
+                        <div className="w-3 h-3 rounded-full bg-red-500" />
                         <div>
                             <p className="text-sm font-medium text-gray-500">Clauses Flagged</p>
                             <h4 className="text-2xl font-bold text-gray-900">—</h4>
@@ -71,9 +67,7 @@ export default function Dashboard() {
                     </div>
 
                     <div className="glass-panel p-6 rounded-2xl flex items-center gap-4 border border-white/60">
-                        <div className="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center text-green-600">
-                            <CheckBadgeIcon className="w-6 h-6" />
-                        </div>
+                        <div className="w-3 h-3 rounded-full bg-green-500" />
                         <div>
                             <p className="text-sm font-medium text-gray-500">Clean Documents</p>
                             <h4 className="text-2xl font-bold text-gray-900">—</h4>

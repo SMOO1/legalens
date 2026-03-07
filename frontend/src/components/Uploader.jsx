@@ -85,8 +85,8 @@ const Uploader = () => {
         <div className="w-full max-w-2xl mx-auto flex flex-col items-center">
             {/* Introduction text */}
             <div className="text-center mb-10 w-full">
-                <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight tracking-tight">
-                    Find Predatory Clauses before you <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-500">Sign.</span>
+                <h2 className="text-3xl md:text-5xl font-semibold text-[#17282E] mb-6 leading-tight tracking-tight">
+                    Find predatory clauses before you <span className="text-[#604B42]">sign.</span>
                 </h2>
             </div>
 
@@ -98,11 +98,12 @@ const Uploader = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className={`w-full relative shadow-xl rounded-3xl p-10 flex flex-col items-center justify-center text-center transition-all duration-300 ease-out border-2 border-dashed
-              ${isHovering
-                                ? 'border-blue-500 bg-blue-50/80 scale-[1.02]'
-                                : 'border-slate-300 bg-white/60 hover:border-blue-400 hover:bg-slate-50/80 glass-panel cursor-pointer'
-                            }
+                        className={`w-full relative rounded-3xl p-10 flex flex-col items-center justify-center text-center transition-all duration-300 ease-out border-2 border-dashed
+              ${
+                  isHovering
+                      ? 'border-[#17282E] bg-[#17282E]/5 scale-[1.02]'
+                      : 'border-[#604B42]/30 bg-[#EBE6E3] hover:border-[#17282E]/60 hover:bg-[#EBE6E3] cursor-pointer'
+              }
             `}
                         onDragEnter={handleDragEnter}
                         onDragOver={handleDragEnter}
@@ -118,18 +119,18 @@ const Uploader = () => {
                             accept=".pdf,.doc,.docx"
                         />
 
-                        <div className={`p-5 rounded-full mb-6 transition-colors duration-300 ${isHovering ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500'}`}>
+                        <div className={`p-5 rounded-full mb-6 transition-colors duration-300 ${isHovering ? 'bg-[#17282E]/10 text-[#17282E]' : 'bg-[#604B42]/10 text-[#604B42]'}`}>
                             <DocumentPlusIcon className="w-12 h-12" />
                         </div>
 
-                        <h3 className="text-xl font-semibold text-slate-800 mb-2">
+                        <h3 className="text-xl font-semibold text-[#17282E] mb-2">
                             Browse files or drag and drop
                         </h3>
-                        <p className="text-slate-500 max-w-sm mb-4">
+                        <p className="text-[#604B42] max-w-sm mb-4">
                             Supported formats: PDF, DOC, DOCX. Maximum file size: 25MB. All files are securely processed and immediately deleted.
                         </p>
                         {!isAuthenticated && (
-                            <p className="text-sm text-blue-600 font-medium">
+                                <p className="text-sm text-[#17282E] font-medium">
                                 Sign in or create an account to scan and save documents to your dashboard.
                             </p>
                         )}
@@ -142,8 +143,8 @@ const Uploader = () => {
                         className="w-full bg-white shadow-xl rounded-3xl p-8 border border-slate-200"
                     >
                         {/* File Info */}
-                        <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 mb-6">
-                            <div className="p-3 bg-blue-100 text-blue-600 rounded-xl relative">
+                        <div className="flex items-start gap-4 p-4 rounded-2xl bg-[#F5F0EC] border border-[#604B42]/20 mb-6">
+                            <div className="p-3 bg-[#17282E]/10 text-[#17282E] rounded-xl relative">
                                 <DocumentTextIcon className="w-8 h-8" />
                                 {scanComplete && (
                                     <motion.div
@@ -156,10 +157,10 @@ const Uploader = () => {
                                 )}
                             </div>
                             <div className="flex-1 overflow-hidden flex flex-col justify-center">
-                                <h4 className="font-semibold text-slate-800 truncate" title={file.name}>
+                                <h4 className="font-semibold text-[#17282E] truncate" title={file.name}>
                                     {file.name}
                                 </h4>
-                                <p className="text-sm text-slate-500">
+                                <p className="text-sm text-[#604B42]">
                                     {(file.size / 1024 / 1024).toFixed(2)} MB
                                 </p>
                             </div>
@@ -167,7 +168,7 @@ const Uploader = () => {
                             {!isScanning && !scanComplete && (
                                 <button
                                     onClick={(e) => { e.stopPropagation(); resetUploader(); }}
-                                    className="text-slate-400 hover:text-red-500 p-2 transition-colors rounded-lg hover:bg-slate-100"
+                                    className="text-[#604B42]/60 hover:text-red-500 p-2 transition-colors rounded-lg hover:bg-[#F5F0EC]"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                                         <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
@@ -192,15 +193,15 @@ const Uploader = () => {
                                     className="mb-6 overflow-hidden"
                                 >
                                     <div className="flex justify-between text-sm mb-2">
-                                        <span className="font-medium text-blue-700 flex items-center gap-2">
+                                        <span className="font-medium text-[#17282E] flex items-center gap-2">
                                             <ArrowPathIcon className="w-4 h-4 animate-spin" />
                                             Scanning for clauses...
                                         </span>
                                         <span className="text-slate-500 font-medium">{Math.min(simulatedProgress, 100)}%</span>
                                     </div>
-                                    <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                    <div className="w-full bg-[#F5F0EC] rounded-full h-2.5 overflow-hidden">
                                         <motion.div
-                                            className="bg-blue-600 h-full rounded-full w-fullorigin-left"
+                                            className="bg-[#17282E] h-full rounded-full w-fullorigin-left"
                                             initial={{ width: 0 }}
                                             animate={{ width: `${Math.min(simulatedProgress, 100)}%` }}
                                             transition={{ ease: "linear" }}
@@ -237,8 +238,8 @@ const Uploader = () => {
                                         onClick={initiateScan}
                                         disabled={isScanning}
                                         className={`flex-1 py-3 px-6 rounded-xl font-semibold shadow-md transition-all ${isScanning
-                                            ? 'bg-blue-400 text-white cursor-not-allowed opacity-90'
-                                            : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg active:scale-[0.98]'
+                                            ? 'bg-[#17282E]/70 text-white cursor-not-allowed opacity-90'
+                                            : 'bg-[#17282E] hover:bg-[#17282E] text-white hover:shadow-lg active:scale-[0.98]'
                                             } flex items-center justify-center gap-2`}
                                     >
                                         {isScanning ? (
@@ -251,19 +252,19 @@ const Uploader = () => {
                                     <button
                                         type="button"
                                         onClick={() => loginWithRedirect({ appState: { returnTo: '/' } })}
-                                        className="flex-1 py-3 px-6 rounded-xl font-semibold bg-gray-900 hover:bg-gray-800 text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                                        className="flex-1 py-3 px-6 rounded-xl font-semibold bg-[#17282E] hover:bg-[#17282E] text-white shadow-md hover:shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                                     >
                                         Sign in to scan documents
                                     </button>
                                 )
                             ) : (
                                 <>
-                                    <button className="flex-1 py-3 px-6 rounded-xl font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-md transition-all active:scale-[0.98]">
+                                    <button className="flex-1 py-3 px-6 rounded-xl font-semibold bg-[#17282E] hover:bg-[#17282E] text-white shadow-md transition-all active:scale-[0.98]">
                                         View Detailed Report
                                     </button>
                                     <button
                                         onClick={resetUploader}
-                                        className="py-3 px-6 rounded-xl font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all active:scale-[0.98]"
+                                        className="py-3 px-6 rounded-xl font-semibold bg-[#F5F0EC] hover:bg-[#EBE6E3] text-[#17282E] transition-all active:scale-[0.98]"
                                     >
                                         Scan Another
                                     </button>
