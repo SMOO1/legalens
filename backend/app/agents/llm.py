@@ -10,7 +10,7 @@ class GeminiQuotaExceededError(Exception):
 
 def extractor_llm():
     return ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash",
         temperature=0.1,
         max_tokens=8192,
         google_api_key=os.environ["GEMINI_KEY_EXTRACTOR"],
@@ -19,7 +19,7 @@ def extractor_llm():
 
 def analyst_llm():
     return ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash",
         temperature=0.2,
         max_tokens=8192,
         google_api_key=os.environ["GEMINI_KEY_ANALYST"],
@@ -28,7 +28,7 @@ def analyst_llm():
 
 def summarizer_llm():
     return ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash",
         temperature=0.3,
         max_tokens=2048,
         google_api_key=os.environ["GEMINI_KEY_SUMMARIZER"],
