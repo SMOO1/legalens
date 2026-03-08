@@ -1,0 +1,53 @@
+# Build and deploy LegaLens API to Google Cloud Run.
+# Set Cloud Build trigger root directory to "backend", or run from backend:
+#   gcloud builds submit --config=cloudbuild.yaml .
+#
+# Substitutions (set in trigger or pass with --substitutions):
+#   _SERVICE_NAME  Cloud Run service name (default: legalens-api)
+#   _REGION        e.g. us-central1 (default: us-central1)
+#   _REPOSITORY    Artifact Registry repo name (default: legalens)
+#   _TAG           Image tag; default "latest" for manual submit. In a trigger, set to SHORT_SHA.
+
+substitutions:
+  _SERVICE_NAME: legalens-api
+  _REGION: us-central1
+  _REPOSITORY: legalens
+  _TAG: latest
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_SERVICE_NAME}:${_TAG}
+      - .
+    id: build
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_SERVICE_NAME}:${_TAG}
+    id: push
+    waitFor: [build]
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE_NAME}
+      - --image
+      - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_SERVICE_NAME}:${_TAG}
+      - --region
+      - ${_REGION}
+      - --platform
+      - managed
+      - --allow-unauthenticated
+    id: deploy
+    waitFor: [push]
+
+images:
+  - ${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/${_SERVICE_NAME}:${_TAG}
