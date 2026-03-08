@@ -33,6 +33,7 @@ from app.agents.extractor import run_extractor
 from app.agents.negotiate import run_negotiator
 from app.agents.summarizer import run_qa, run_summarizer
 from app.agents.validator import run_validator
+from app.db.analyses import save_analysis
 
 router = APIRouter(prefix="/agents", tags=["agents"])
 
@@ -126,6 +127,12 @@ async def run_analysis_stream(session_id: str) -> AsyncGenerator[str, None]:
             "clause_count": len(analyzed),
         }
         result_store[session_id] = result
+        document_id = doc.get("document_id")
+        if document_id:
+            try:
+                save_analysis(document_id, result)
+            except Exception as e:
+                print("[Pipeline] Failed to save analysis to DB:", e)
         print("[Pipeline complete] Backboard thread_id:", thread_id)
         print("[Pipeline output]", json.dumps(result, indent=2, default=str))
         yield sse({"event": "complete", "result": result})
