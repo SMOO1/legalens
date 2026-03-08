@@ -218,7 +218,7 @@ const Uploader = () => {
                                     <CheckCircleIcon className="w-6 h-6 shrink-0 mt-0.5 text-emerald-500" />
                                     <div>
                                         <h5 className="font-bold">Upload complete</h5>
-                                        <p className="text-sm mt-1">Your document has been uploaded. Head to your dashboard to view and analyze it.</p>
+                                        <p className="text-sm mt-1">Your document has been uploaded. Head to Documents to view and analyze it.</p>
                                     </div>
                                 </div>
                             </motion.div>
@@ -250,10 +250,10 @@ const Uploader = () => {
                             ) : (
                                 <>
                                     <button
-                                        onClick={() => navigate('/dashboard')}
+                                        onClick={() => navigate('/documents')}
                                         className="flex-1 py-3 px-6 pixel-button font-semibold bg-[#17282E] hover:bg-[#17282E] text-white transition-all active:scale-[0.98]"
                                     >
-                                        Go to Dashboard
+                                        Go to Documents
                                     </button>
                                     <button
                                         onClick={resetUploader}

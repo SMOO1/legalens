@@ -1,8 +1,12 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
+import { AppProvider } from './context/AppContext';
 import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
+import Documents from './pages/Documents';
+import Viewer from './pages/Viewer';
+import Negotiate from './pages/Negotiate';
+import Consultant from './pages/Consultant';
 
 function Auth0ProviderWithCallback({ children }) {
   const navigate = useNavigate();
@@ -27,10 +31,17 @@ function App() {
   return (
     <BrowserRouter>
       <Auth0ProviderWithCallback>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
+        <AppProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/documents" element={<Documents />} />
+            <Route path="/viewer" element={<Viewer />} />
+            <Route path="/negotiate" element={<Negotiate />} />
+            <Route path="/consultant" element={<Consultant />} />
+            {/* Legacy redirect */}
+            <Route path="/dashboard" element={<Documents />} />
+          </Routes>
+        </AppProvider>
       </Auth0ProviderWithCallback>
     </BrowserRouter>
   );
