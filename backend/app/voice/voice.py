@@ -61,13 +61,19 @@ async def text_to_speech_internal(
         )
     client = get_elevenlabs_client()
     vid = voice_id or get_tts_voice_id()
-    response = await client.text_to_speech.convert(
+    response = client.text_to_speech.convert(
         voice_id=vid,
         text=text.strip(),
         model_id=model_id,
         output_format=output_format,
     )
-    # SDK may return bytes, a stream, or an httpx-like response
+    # SDK returns an async generator of audio chunks
+    if hasattr(response, "__aiter__"):
+        chunks = []
+        async for chunk in response:
+            if isinstance(chunk, bytes):
+                chunks.append(chunk)
+        return b"".join(chunks)
     if isinstance(response, bytes):
         return response
     if hasattr(response, "content"):
