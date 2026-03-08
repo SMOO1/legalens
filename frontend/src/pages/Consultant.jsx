@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { Conversation } from '@elevenlabs/client';
 import Layout from '../components/Layout';
 import { useApp } from '../context/AppContext';
-import { createVoiceSession, createBackboardThread, voiceThink, addContextDocumentToVoiceThread } from '../api.ts';
+import { createVoiceSession, createBackboardThread, voiceThink, textToSpeech, addContextDocumentToVoiceThread } from '../api.ts';
 
 function getVoiceStatusVariant(status) {
     const normalized = (status || 'idle').toLowerCase();
@@ -26,6 +26,44 @@ export default function ConsultantPage() {
         voiceConversationRef, voiceBackboardThreadIdRef,
         hotwordRecognizerRef, addConsultantTurnRef,
     } = useApp();
+
+    const ttsAudioRef = useRef(null);
+
+    const speakText = useCallback(async (text) => {
+        if (ttsAudioRef.current) {
+            ttsAudioRef.current.pause();
+            ttsAudioRef.current = null;
+        }
+        setAssistantSpeaking(true);
+        try {
+            const blob = await textToSpeech(text);
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            ttsAudioRef.current = audio;
+            audio.onended = () => {
+                setAssistantSpeaking(false);
+                URL.revokeObjectURL(url);
+                ttsAudioRef.current = null;
+            };
+            audio.onerror = () => {
+                setAssistantSpeaking(false);
+                URL.revokeObjectURL(url);
+                ttsAudioRef.current = null;
+            };
+            await audio.play();
+        } catch (_err) {
+            setAssistantSpeaking(false);
+        }
+    }, [setAssistantSpeaking]);
+
+    useEffect(() => {
+        return () => {
+            if (ttsAudioRef.current) {
+                ttsAudioRef.current.pause();
+                ttsAudioRef.current = null;
+            }
+        };
+    }, []);
 
     const handleConsultantSend = async (e) => {
         e.preventDefault();
@@ -53,15 +91,16 @@ export default function ConsultantPage() {
         setConsultantMessages((prev) => [...prev, { id: `${timestamp}-user`, role: 'user', text: trimmed, createdAt: timestamp }]);
         setConsultantInput('');
         setConsultantSending(true);
-        setAssistantSpeaking(true);
 
         try {
             const { answer } = await voiceThink({ thread_id: threadId, user_utterance: trimmed, session_id: null });
+            const replyText = answer || "I couldn\u2019t get an answer for that.";
             setConsultantMessages((prev) => [...prev, {
                 id: `${Date.now()}-assistant`, role: 'assistant',
-                text: answer || "I couldn\u2019t get an answer for that.",
+                text: replyText,
                 createdAt: new Date().toISOString(),
             }]);
+            speakText(replyText);
         } catch (err) {
             setConsultantMessages((prev) => [...prev, {
                 id: `${Date.now()}-assistant`, role: 'assistant',
@@ -70,7 +109,6 @@ export default function ConsultantPage() {
             }]);
         } finally {
             setConsultantSending(false);
-            setAssistantSpeaking(false);
         }
     };
 

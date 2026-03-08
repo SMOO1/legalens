@@ -278,6 +278,22 @@ export async function voiceThink(params: {
   return data as { answer: string };
 }
 
+export async function textToSpeech(text: string): Promise<Blob> {
+  const res = await apiFetch("/voice/tts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-Key": voiceApiKey(),
+    },
+    body: JSON.stringify({ text }),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.detail || "TTS failed");
+  }
+  return res.blob();
+}
+
 export async function addContextDocumentToVoiceThread(params: {
   thread_id: string;
   bucket_path: string;
